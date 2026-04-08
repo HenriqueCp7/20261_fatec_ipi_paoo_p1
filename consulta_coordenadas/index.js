@@ -13,10 +13,27 @@ const consultaDeCoordenadas = (cidade) => {
         console.log(`Coordenadas:\n`);
         console.log(`Latitude: ${lat}`);
         console.log(`Longitude: ${long}`);
-        console.log(`--------------------------------\n`)
+        console.log(`--------------------------------`)
         return {lat, long}
     })
     .catch(err => console.log(err))
 }
 
+const consultaDeCondicoesClimaticas = async (lat, long) => {
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${long}&current=temperature_2m,apparent_temperature,wind_speed_10m`
+
+    try {
+        const res = await axios.get(url)
+        
+        console.log(`Condicoes Climaticas:\n`);
+        console.log(`Temperatura: ${res.data.current.temperature_2m} °C`)
+        console.log(`Sencacao Termica: ${res.data.current.apparent_temperature} °C`)
+        console.log(`Velocidade do Vento: ${res.data.current.wind_speed_10m} Km/h`)
+        console.log(`--------------------------------`)
+    } catch (err) {
+        console.log(err)
+    }
+}
+
 consultaDeCoordenadas(`São Paulo`)
+.then(coords => consultaDeCondicoesClimaticas(coords.lat, coords.long))
